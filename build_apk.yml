@@ -3,46 +3,70 @@ name: Build Android APK
 on:
   push:
     branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
   workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-22.04
+
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Python
+      - name: Set up Python 3.10
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
 
-      - name: Install System Dependencies
+      - name: Install system dependencies
         run: |
-          sudo apt update
-          sudo apt install -y \
-            git zip unzip openjdk-17-jdk python3-pip autoconf \
-            libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev \
-            libtinfo5 cmake libffi-dev libssl-dev \
-            libltdl-dev libsqlite3-dev
+          sudo apt-get update
+          sudo apt-get install -y \
+            python3-pip \
+            python3-dev \
+            build-essential \
+            libssl-dev \
+            libffi-dev \
+            libncurses5-dev \
+            zlib1g-dev \
+            libsqlite3-dev \
+            libreadline-dev \
+            libbz2-dev \
+            libgdbm-dev \
+            liblzma-dev \
+            tk-dev \
+            git \
+            openjdk-17-jdk \
+            autoconf \
+            libtool \
+            pkg-config \
+            zip \
+            unzip
 
-      - name: Install Buildozer & Cython
+      - name: Install Buildozer and dependencies
         run: |
-          python -m pip install --upgrade pip
-          pip install "cython<3.0" buildozer
+          pip install --upgrade pip setuptools wheel
+          pip install "cython<3.0"
+          pip install buildozer
+          pip install kivy
 
       - name: Fix NDK version for CI compatibility
         run: |
           sed -i 's/android.ndk = 27/android.ndk = 25c/' buildozer.spec
           sed -i 's/android.ndk_version = 27c/android.ndk_version = 25c/' buildozer.spec
+          echo "=== NDK setting in buildozer.spec ==="
+          grep -i "ndk" buildozer.spec || echo "No NDK line found"
 
       - name: Build APK with Buildozer
         run: |
           buildozer android debug
         timeout-minutes: 30
 
-      - name: Upload APK Artifact
+      - name: Upload APK artifact
         uses: actions/upload-artifact@v4
+        if: success()
         with:
-          name: ebook-tts-reader-apk
+          name: app-debug
           path: bin/*.apk
