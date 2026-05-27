@@ -31,9 +31,15 @@ jobs:
           python -m pip install --upgrade pip
           pip install "cython<3.0" buildozer
 
+      - name: Fix NDK version for CI compatibility
+        run: |
+          sed -i 's/android.ndk = 27/android.ndk = 25c/' buildozer.spec
+          sed -i 's/android.ndk_version = 27c/android.ndk_version = 25c/' buildozer.spec
+
       - name: Build APK with Buildozer
         run: |
           buildozer android debug
+        timeout-minutes: 30
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
