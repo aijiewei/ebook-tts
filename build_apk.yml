@@ -3,70 +3,36 @@ name: Build Android APK
 on:
   push:
     branches: [ main, master ]
-  pull_request:
-    branches: [ main, master ]
-  workflow_dispatch:
+  workflow_dispatch:  # 允许手动触发
 
 jobs:
   build:
     runs-on: ubuntu-22.04
-
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Python 3.10
+      - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.10'
+          python-version: '3.11'
 
-      - name: Install system dependencies
+      - name: Install Buildozer & Dependencies
         run: |
-          sudo apt-get update
-          sudo apt-get install -y \
-            python3-pip \
-            python3-dev \
-            build-essential \
-            libssl-dev \
-            libffi-dev \
-            libncurses5-dev \
-            zlib1g-dev \
-            libsqlite3-dev \
-            libreadline-dev \
-            libbz2-dev \
-            libgdbm-dev \
-            liblzma-dev \
-            tk-dev \
-            git \
-            openjdk-17-jdk \
-            autoconf \
-            libtool \
-            pkg-config \
-            zip \
-            unzip
-
-      - name: Install Buildozer and dependencies
-        run: |
-          pip install --upgrade pip setuptools wheel
-          pip install "cython<3.0"
-          pip install buildozer
-          pip install kivy
-
-      - name: Fix NDK version for CI compatibility
-        run: |
-          sed -i 's/android.ndk = 27/android.ndk = 25c/' buildozer.spec
-          sed -i 's/android.ndk_version = 27c/android.ndk_version = 25c/' buildozer.spec
-          echo "=== NDK setting in buildozer.spec ==="
-          grep -i "ndk" buildozer.spec || echo "No NDK line found"
+          sudo apt update
+          sudo apt install -y git zip unzip openjdk-17-jdk python3-pip autoconf \
+            libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev \
+            libtinfo5 cmake libffi-dev libssl-dev
+          pip install --user buildozer==1.5.0 cython
 
       - name: Build APK with Buildozer
         run: |
+          export PATH=$HOME/.local/bin:$PATH
           buildozer android debug
-        timeout-minutes: 30
+        timeout-minutes: 45
 
-      - name: Upload APK artifact
+      - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
-        if: success()
         with:
-          name: app-debug
+          name: ebook-tts-reader-apk
           path: bin/*.apk
