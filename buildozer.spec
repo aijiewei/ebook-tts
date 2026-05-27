@@ -12,11 +12,10 @@ requirements = python3,kivy==2.3.0,pypdf,ebooklib,beautifulsoup4,gtts,edge-tts,p
 
 # Android 相关
 android.permissions = READ_EXTERNAL_STORAGE,WRITE_EXTERNAL_STORAGE,INTERNET
-android.api = 34
+android.api = 33
 android.minapi = 24
-android.sdk = 34
-android.ndk = 27
-android.ndk_version = 27c
+android.sdk = 33
+android.ndk = 25b
 android.gradle_dependencies = 'com.android.support:support-annotations:28.0.0'
 android.accept_sdk_license = True
 android.arch = arm64-v8a
