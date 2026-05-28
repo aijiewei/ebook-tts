@@ -30,9 +30,10 @@ jobs:
           echo "JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64" >> $GITHUB_ENV
           pip install --user buildozer cython
 
-      - name: Build APK with Buildozer
+            - name: Build APK with Buildozer
         run: |
-          export PATH=$HOME/.local/bin:$PATH
+          export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+          export PATH=$HOME/.local/bin:$JAVA_HOME/bin:$PATH
           yes | buildozer android debug
 
       - name: Upload APK Artifact
