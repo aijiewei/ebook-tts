@@ -32,7 +32,7 @@ osx.python_version = 3
 osx.kivy_version = 2.3.0
 
 # python-for-android 配置
-p4a.python_version = 3.11
+p4a.branch = v2024.01.21
 
 [buildozer]
 log_level = 2
