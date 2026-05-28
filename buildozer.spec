@@ -8,7 +8,7 @@ source.dir = .
 # version.filename = %(source.dir)s/main.py
 
 # Python 依赖
-requirements = python3,kivy==2.3.0,pypdf,ebooklib,beautifulsoup4,gtts,edge-tts,pyjnius,android
+requirements = python3,kivy==2.2.1,pypdf,ebooklib,beautifulsoup4,gtts,edge-tts,pyjnius,android
 
 # Android 相关
 android.permissions = READ_EXTERNAL_STORAGE,WRITE_EXTERNAL_STORAGE,INTERNET
