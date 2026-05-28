@@ -8,7 +8,7 @@ source.dir = .
 # version.filename = %(source.dir)s/main.py
 
 # Python 依赖
-requirements = python3,kivy==2.2.1,pypdf,ebooklib,beautifulsoup4,gtts,edge-tts,pyjnius,android
+requirements = python3,kivy==2.3.0,pypdf,ebooklib,beautifulsoup4,gtts,edge-tts
 
 # Android 相关
 android.permissions = READ_EXTERNAL_STORAGE,WRITE_EXTERNAL_STORAGE,INTERNET
@@ -30,6 +30,9 @@ android.window_soft_input_mode = adjustResize
 # 桌面测试
 osx.python_version = 3
 osx.kivy_version = 2.3.0
+
+# python-for-android 配置
+p4a.python_version = 3.11
 
 [buildozer]
 log_level = 2
