@@ -1,5 +1,5 @@
 [app]
-title = 电子书朗读器
+title = Ebook TTS Reader
 package.name = ebookttsreader
 package.domain = org.example
 version = 1.0.0
@@ -8,7 +8,7 @@ source.dir = .
 # version.filename = %(source.dir)s/main.py
 
 # Python 依赖
-requirements = python3,kivy==2.3.0,pypdf,ebooklib,beautifulsoup4,gtts,edge-tts
+requirements = python3==3.11.15,hostpython3==3.11.15,kivy==2.3.0,pypdf,ebooklib,beautifulsoup4,gtts,edge-tts
 
 # Android 相关
 android.permissions = READ_EXTERNAL_STORAGE,WRITE_EXTERNAL_STORAGE,INTERNET
@@ -32,7 +32,8 @@ osx.python_version = 3
 osx.kivy_version = 2.3.0
 
 # python-for-android 配置
-p4a.branch = v2024.01.21
+# 使用 master 分支（支持 Python 3.11，develop 分支要求 3.14+）
+p4a.branch = master
 
 [buildozer]
 log_level = 2
