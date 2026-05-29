@@ -26,23 +26,30 @@ jobs:
             libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev \
             libtinfo5 cmake libffi-dev libssl-dev
           pip install --user 'buildozer==1.5.0' cython
-          # Pre-set JAVA_HOME globally
           echo "JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64" >> $GITHUB_ENV
           echo "PATH=$JAVA_HOME/bin:$PATH" >> $GITHUB_ENV
 
       - name: Build APK with Buildozer
         run: |
-          # Remove Java 11 and force Java 17 system-wide
+          # Delete ALL Java 11 installations from the runner
           sudo rm -rf /usr/lib/jvm/temurin-11-jdk-amd64 2>/dev/null || true
           sudo rm -rf /usr/lib/jvm/msopenjdk-11 2>/dev/null || true
+          # Unset all Java 11 env vars that the runner pre-sets
+          unset JAVA_HOME_11_X64
+          # Force Java 17 via update-alternatives
+          sudo update-alternatives --set java /usr/lib/jvm/java-17-openjdk-amd64/bin/java 2>/dev/null || true
+          sudo update-alternatives --set javac /usr/lib/jvm/java-17-openjdk-amd64/bin/javac 2>/dev/null || true
           export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
           export PATH=$HOME/.local/bin:$JAVA_HOME/bin:$PATH
           # Kill any cached Gradle daemon
           pkill -f gradle 2>/dev/null || true
           rm -rf ~/.gradle/daemon ~/.gradle/caches 2>/dev/null || true
-          # Write gradle.properties
+          # Write gradle.properties with absolute Java path
           mkdir -p ~/.gradle
           echo "org.gradle.java.home=/usr/lib/jvm/java-17-openjdk-amd64" > ~/.gradle/gradle.properties
+          # Also set it in the project's gradle.properties
+          mkdir -p /home/runner/work/ebook-tts/ebook-tts/.buildozer/android/platform/build-arm64-v8a/dists/ebookttsreader
+          echo "org.gradle.java.home=/usr/lib/jvm/java-17-openjdk-amd64" >> /home/runner/work/ebook-tts/ebook-tts/.buildozer/android/platform/build-arm64-v8a/dists/ebookttsreader/gradle.properties 2>/dev/null || true
           echo "JAVA_HOME: $JAVA_HOME"
           java -version
           yes | buildozer android debug
