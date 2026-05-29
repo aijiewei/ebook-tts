@@ -26,19 +26,24 @@ jobs:
             libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev \
             libtinfo5 cmake libffi-dev libssl-dev
           pip install --user 'buildozer==1.5.0' cython
+          # Pre-set JAVA_HOME globally
           echo "JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64" >> $GITHUB_ENV
           echo "PATH=$JAVA_HOME/bin:$PATH" >> $GITHUB_ENV
 
       - name: Build APK with Buildozer
-        env:
-          JAVA_HOME: /usr/lib/jvm/java-17-openjdk-amd64
         run: |
+          # Remove Java 11 and force Java 17 system-wide
+          sudo rm -rf /usr/lib/jvm/temurin-11-jdk-amd64 2>/dev/null || true
+          sudo rm -rf /usr/lib/jvm/msopenjdk-11 2>/dev/null || true
+          export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+          export PATH=$HOME/.local/bin:$JAVA_HOME/bin:$PATH
+          # Kill any cached Gradle daemon
           pkill -f gradle 2>/dev/null || true
           rm -rf ~/.gradle/daemon ~/.gradle/caches 2>/dev/null || true
-          export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
-          export PATH=$JAVA_HOME/bin:$PATH
+          # Write gradle.properties
           mkdir -p ~/.gradle
           echo "org.gradle.java.home=/usr/lib/jvm/java-17-openjdk-amd64" > ~/.gradle/gradle.properties
+          echo "JAVA_HOME: $JAVA_HOME"
           java -version
           yes | buildozer android debug
 
