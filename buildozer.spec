@@ -19,7 +19,6 @@ source.include_exts = py,png,jpg,kv,atlas,ttf,mp3,wav
 version = 1.0.0
 
 # (list) Application requirements
-# NOTE: ebooklib version is pinned in requirements.txt, not here
 requirements = python3,kivy,pypdf,ebooklib,beautifulsoup4,gtts,edge-tts
 
 # (str) Supported orientation
@@ -44,14 +43,11 @@ android.minapi = 24
 # (str) Android NDK version
 android.ndk = 25b
 
-# (str) Android archs — FIXED: use 'archs' (plural), not 'arch' (singular)
+# (str) Android archs
 android.archs = arm64-v8a
 
 # (bool) AndroidX
 android.enable_androidx = True
-
-# (str) Explicit Java 17 path (fixes Gradle "requires Java 17, using Java 11")
-android.java_home = /usr/lib/jvm/java-17-openjdk-amd64
 
 # (bool) Accept SDK license
 android.accept_sdk_license = True
