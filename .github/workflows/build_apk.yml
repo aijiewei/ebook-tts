@@ -2,35 +2,47 @@ name: Build Android APK
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
   workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-22.04
+
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Python
+      - name: Set up Python 3.11
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
-      - name: Install Buildozer & Dependencies
+      - name: Install system dependencies
         run: |
           sudo apt update
-          sudo apt install -y git zip unzip openjdk-17-jdk python3-pip autoconf \
-            libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev \
+          sudo apt install -y \
+            git zip unzip \
+            openjdk-17-jdk \
+            python3-pip autoconf libtool pkg-config \
+            zlib1g-dev libncurses5-dev libncursesw5-dev \
             libtinfo5 cmake libffi-dev libssl-dev
-          pip install --user buildozer cython
 
-      - name: Build APK with Buildozer
+      - name: Install Buildozer and Cython
         run: |
-          export PATH=$HOME/.local/bin:$PATH
-          yes | buildozer android debug
+          pip install --user buildozer cython
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
 
-      - name: Upload APK Artifact
+      - name: Build with Buildozer (JAVA_HOME forced to JDK 17)
+        run: |
+          export JAVA_HOME=/usr/lib/jvm/temurin-17-jdk-amd64
+          export PATH=$JAVA_HOME/bin:$PATH
+          java -version
+          buildozer android debug
+
+      - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
           name: ebook-tts-reader-apk
