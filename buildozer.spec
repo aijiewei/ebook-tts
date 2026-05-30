@@ -1,39 +1,63 @@
 [app]
+
+# (str) Title of your application
 title = Ebook TTS Reader
+
+# (str) Package name
 package.name = ebookttsreader
+
+# (str) Package domain (needed for android/ios packaging)
 package.domain = org.example
-version = 1.0.0
+
+# (str) Source code where the main.py lives
 source.dir = .
-# version.regex = __version__ = ['"](.*)['"]
-# version.filename = %(source.dir)s/main.py
 
-# Python deps
-requirements = python3==3.11.15,hostpython3==3.11.15,kivy==2.3.0,pypdf,ebooklib,beautifulsoup4,gtts,edge-tts
+# (list) Source files to include
+source.include_exts = py,png,jpg,kv,atlas,ttf,mp3,wav
 
-# Android
-android.permissions = READ_EXTERNAL_STORAGE,WRITE_EXTERNAL_STORAGE,INTERNET
+# (str) Application versioning
+version = 1.0.0
+
+# (list) Application requirements
+# NOTE: ebooklib version is pinned in requirements.txt, not here
+requirements = python3,kivy,pypdf,ebooklib,beautifulsoup4,gtts,edge-tts
+
+# (str) Supported orientation
+orientation = landscape
+
+#
+# Android Specific
+#
+
+# (bool) Fullscreen
+fullscreen = 1
+
+# (list) Permissions
+android.permissions = INTERNET, READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE
+
+# (int) Android API to use (target SDK)
 android.api = 33
+
+# (int) Minimum API
 android.minapi = 24
-android.sdk = 33
+
+# (str) Android NDK version
 android.ndk = 25b
-# android.gradle_dependencies = com.android.support:support-annotations:28.0.0
+
+# (str) Android archs — FIXED: use 'archs' (plural), not 'arch' (singular)
+android.archs = arm64-v8a
+
+# (bool) AndroidX
+android.enable_androidx = True
+
+# (str) Explicit Java 17 path (fixes Gradle "requires Java 17, using Java 11")
+android.java_home = /usr/lib/jvm/java-17-openjdk-amd64
+
+# (bool) Accept SDK license
 android.accept_sdk_license = True
-android.arch = arm64-v8a
 
-# Screen
-android.orientation = portrait
-android.window_soft_input_mode = adjustResize
+# (str) Android app theme
+android.apptheme = @android:style/Theme.NoTitleBar
 
-# Icon (replace with your own)
-# android.icon = icon.png
-
-# Desktop test
-osx.python_version = 3
-osx.kivy_version = 2.3.0
-
-# python-for-android: use master branch (supports Python 3.11)
-p4a.branch = master
-
-[buildozer]
-log_level = 2
-warn_on_root = 1
+# (str) Orientation override
+android.orientation = landscape
