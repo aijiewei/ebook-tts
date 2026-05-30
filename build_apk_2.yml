@@ -30,24 +30,16 @@ jobs:
             zlib1g-dev libncurses5-dev libncursesw5-dev \
             libtinfo5 cmake libffi-dev libssl-dev
 
-      - name: Set Java 17 as default (fix Gradle "requires Java 17")
-        run: |
-          # Use update-alternatives to force Java 17 as the system default
-          sudo update-alternatives --set java /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
-          sudo update-alternatives --set javac /usr/lib/jvm/temurin-17-jdk-amd64/bin/javac
-          echo "JAVA_HOME=/usr/lib/jvm/temurin-17-jdk-amd64" >> $GITHUB_ENV
-          echo "PATH=/usr/lib/jvm/temurin-17-jdk-amd64/bin:$PATH" >> $GITHUB_ENV
-
-      - name: Verify Java version
-        run: java -version
-
       - name: Install Buildozer and Cython
         run: |
           pip install --user buildozer cython
           echo "$HOME/.local/bin" >> $GITHUB_PATH
 
-      - name: Build with Buildozer
+      - name: Build with Buildozer (JAVA_HOME forced to JDK 17)
         run: |
+          export JAVA_HOME=/usr/lib/jvm/temurin-17-jdk-amd64
+          export PATH=$JAVA_HOME/bin:$PATH
+          java -version
           buildozer android debug
 
       - name: Upload APK artifact
