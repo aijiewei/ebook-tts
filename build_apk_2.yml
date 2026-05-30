@@ -30,10 +30,13 @@ jobs:
             zlib1g-dev libncurses5-dev libncursesw5-dev \
             libtinfo5 cmake libffi-dev libssl-dev
 
-      - name: Export JAVA_HOME for Java 17
+      - name: Set Java 17 as default (fix Gradle "requires Java 17")
         run: |
-          echo "JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64" >> $GITHUB_ENV
-          echo "PATH=$JAVA_HOME/bin:$PATH" >> $GITHUB_ENV
+          # Use update-alternatives to force Java 17 as the system default
+          sudo update-alternatives --set java /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+          sudo update-alternatives --set javac /usr/lib/jvm/temurin-17-jdk-amd64/bin/javac
+          echo "JAVA_HOME=/usr/lib/jvm/temurin-17-jdk-amd64" >> $GITHUB_ENV
+          echo "PATH=/usr/lib/jvm/temurin-17-jdk-amd64/bin:$PATH" >> $GITHUB_ENV
 
       - name: Verify Java version
         run: java -version
@@ -45,7 +48,6 @@ jobs:
 
       - name: Build with Buildozer
         run: |
-          export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
           buildozer android debug
 
       - name: Upload APK artifact
